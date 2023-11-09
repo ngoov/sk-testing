@@ -5,9 +5,18 @@
 </script>
 
 <header>
-    <a href="{base}/{$locale}">
-        <h1>typesafe-i18n</h1>
-    </a>
+    <div>
+        <a href="{base}/{$locale}">
+            <h1>typesafe-i18n</h1>
+        </a>
+    </div>
+    <nav>
+        <ul>
+            {#each [...Array(5).keys()] as pageId}
+                <li><a href="/page{pageId}">Page {pageId}</a></li>
+            {/each}
+        </ul>
+    </nav>
 
     <LocaleSwitcher />
 </header>

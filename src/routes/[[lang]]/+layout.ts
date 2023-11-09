@@ -1,8 +1,8 @@
-import type { Locales } from '$lib/i18n/i18n-types';
 import { loadLocaleAsync } from '$lib/i18n/i18n-util.async';
 import { i18nObject } from '$lib/i18n/i18n-util.js';
 
-export async function load({ data: { locale } }: { data: { locale: Locales } }) {
+export async function load({ data }) {
+    const { locale } = data;
     // load dictionary into memory
     await loadLocaleAsync(locale);
     // if you need to output a localized string in a `load` function,
@@ -12,6 +12,5 @@ export async function load({ data: { locale } }: { data: { locale: Locales } }) 
 
     console.info(LL.log({ fileName: '+layout.ts' }));
 
-    // pass locale to the "rendering context"
-    return { locale };
+    return { ...data };
 }
