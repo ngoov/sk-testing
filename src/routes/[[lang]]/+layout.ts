@@ -12,5 +12,5 @@ export async function load({ data }) {
 
     console.info(LL.log({ fileName: '+layout.ts' }));
 
-    return { ...data };
+    return { session: data.session, locale: data.locale };
 }

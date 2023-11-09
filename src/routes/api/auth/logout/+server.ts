@@ -8,12 +8,12 @@ export async function GET({ locals, cookies }) {
 
     const authConfig = await getAuthConfig();
     const client = await getOidcClient(authConfig);
-
+    // Logout URL to end the session on the IdSrv
     const endSessionUrl = client.endSessionUrl({
         id_token_hint: locals.session.tokenSet.id_token,
     });
     const cookieConfig = getAuthStateCookieConfig(authConfig);
-
+    // Local logout, should happen through backchannel logout
     cookies.delete(cookieConfig.name, { path: '/' });
 
     throw redirect(302, endSessionUrl);

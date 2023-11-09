@@ -1,8 +1,6 @@
 import type { IdTokenClaims, TokenSet } from 'openid-client';
 
 export interface AuthSessionState {
-    state?: string;
-    nonce?: string;
     codeVerifier?: string;
     returnAfterLoginUrl?: string;
 }

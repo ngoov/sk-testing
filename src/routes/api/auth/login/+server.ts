@@ -13,8 +13,6 @@ export async function GET({ url, cookies }) {
     // State, nonce and PKCE provide protection against CSRF in various forms. See:
     // https://danielfett.de/2020/05/16/pkce-vs-nonce-equivalent-or-not/
     const sessionState = {
-        state: Buffer.from(crypto.randomUUID()).toString('base64'),
-        nonce: Buffer.from(crypto.randomUUID()).toString('base64'),
         codeVerifier: oidc.generators.codeVerifier(),
         returnAfterLoginUrl: url.searchParams.get('returnUrl') ?? 'http://localhost:5173',
     } satisfies AuthSessionState;
@@ -27,8 +25,6 @@ export async function GET({ url, cookies }) {
         // resource: 'https://my.api.example.com/resource/32178',
         code_challenge: pkce_code_challenge,
         code_challenge_method: 'S256',
-        nonce: sessionState.nonce,
-        state: sessionState.state,
     });
     console.log(`Authorization URL ${authorizationUrl}`);
 

@@ -16,12 +16,10 @@ export async function GET({ url, cookies }) {
     const params = client.callbackParams(url.toString());
     console.log('param', params);
 
-    const { codeVerifier: code_verifier, nonce, state, returnAfterLoginUrl } = sessionStateCookieValue;
+    const { codeVerifier: code_verifier, returnAfterLoginUrl } = sessionStateCookieValue;
 
     const tokenSet = await client.callback(authConfig.redirectUrl, params, {
         code_verifier,
-        nonce,
-        state,
     });
 
     const sessionCookie = await getSessionCookie(tokenSet, authConfig);
