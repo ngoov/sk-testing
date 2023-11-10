@@ -16,7 +16,7 @@ export class AuthCookieConfig<TValue> {
     private _expirationDate: dayjs.Dayjs;
 
     public get name(): string {
-        const prefix = this._authConfig.useSecureCookies ? '__Secure-' : '';
+        const prefix = this._authConfig.useSecureCookies ? '__Host-' : '';
         return `${prefix}${this._internalCookieName}`;
     }
     constructor({
@@ -36,7 +36,7 @@ export class AuthCookieConfig<TValue> {
     private getCookieOptions(): CookieSerializeOptions {
         return {
             httpOnly: true,
-            sameSite: 'lax',
+            sameSite: this._authConfig.useSecureCookies ? 'strict' : 'lax',
             path: '/',
             secure: this._authConfig.useSecureCookies,
             expires: this._expirationDate.toDate(),
