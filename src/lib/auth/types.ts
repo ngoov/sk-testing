@@ -1,5 +1,3 @@
-import type { IdTokenClaims, TokenSet } from 'openid-client';
-
 export interface AuthSessionState {
     codeVerifier?: string;
     returnAfterLoginUrl?: string;
@@ -17,29 +15,9 @@ export interface Profile {
     name?: string;
     given_name?: string;
     family_name?: string;
-    middle_name?: string;
-    nickname?: string;
-    preferred_username?: string;
-    profile?: string;
-    picture?: string;
-    website?: string;
     email?: string;
     email_verified?: boolean;
-    gender?: string;
-    birthdate?: string;
-    zoneinfo?: string;
-    locale?: string;
-    phone_number?: string;
-    updated_at?: number;
-    address?: {
-        formatted?: string;
-        street_address?: string;
-        locality?: string;
-        region?: string;
-        postal_code?: string;
-        country?: string;
-    };
-    [claim: string]: unknown;
+    user_name?: string;
 }
 
 export type Awaitable<T> = T | PromiseLike<T>;
@@ -64,8 +42,13 @@ export interface AuthConfig {
 }
 
 export interface AuthState {
-    tokenSet: TokenSet;
-    claims?: IdTokenClaims & Profile;
-    iat?: number;
-    exp?: number;
+    id_token: string;
+    access_token: string;
+    refresh_token: string;
+    /**
+     * Timestamp when the access_token expires
+     */
+    expires_at: number;
+    token_type: string;
+    claims: Profile;
 }

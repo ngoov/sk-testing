@@ -11,7 +11,7 @@ export async function getAuthConfig(): Promise<AuthConfig> {
         clientSecret: APPSUM_AUTH_CLIENT_SECRET,
         issuerUrl: 'https://localhost:5666',
         redirectUrl: 'http://localhost:5173/api/auth/login/callback',
-        scope: 'openid email profile',
+        scope: 'openid email profile offline_access',
         useSecureCookies: USE_SECURE_COOKIES == '1',
         useJwtCookie: true,
     };

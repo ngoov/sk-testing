@@ -10,7 +10,7 @@ export async function GET({ locals, cookies }) {
     const client = await getOidcClient(authConfig);
     // Logout URL to end the session on the IdSrv
     const endSessionUrl = client.endSessionUrl({
-        id_token_hint: locals.session.tokenSet.id_token,
+        id_token_hint: locals.session.id_token,
     });
     const cookieConfig = getAuthStateCookieConfig(authConfig);
     // Local logout, should happen through backchannel logout

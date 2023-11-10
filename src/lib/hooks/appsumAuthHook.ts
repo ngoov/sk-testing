@@ -1,15 +1,26 @@
 import { getAuthConfig } from '$lib/auth/authConfig';
 import { getAuthStateCookieConfig } from '$lib/auth/authCookies';
-import type { AuthConfig, AuthState, SessionState } from '$lib/auth/types';
+import { getAuthStateCookieToCreate } from '$lib/auth/authState';
+import { getOidcClient } from '$lib/auth/client';
+import type { AuthConfig, AuthState } from '$lib/auth/types';
 import type { Cookies, Handle } from '@sveltejs/kit';
 
 export const appsumAuthHook: Handle = async ({ resolve, event }) => {
     const authConfig = await getAuthConfig();
     const session = await getSession(event.cookies, authConfig);
 
-    if (session == null) {
-        return resolve(event);
+    if (session == null) return resolve(event);
+
+    const tokenExpired = session.expires_at > new Date().getTime();
+    if (tokenExpired) {
+        // Get a new access token
+        const authConfig = await getAuthConfig();
+        const client = await getOidcClient(authConfig);
+        const newTokenSet = await client.refresh(session.refresh_token);
+        const cookieConfig = await getAuthStateCookieToCreate(newTokenSet, authConfig);
+        event.cookies.set(cookieConfig.name, cookieConfig.value, cookieConfig.options);
     }
+
     event.locals.session = session;
 
     return resolve(event);
@@ -27,7 +38,7 @@ async function getSession(cookies: Cookies, authConfig: AuthConfig): Promise<Aut
     if (!state) return null;
 
     if (!authConfig.useJwtCookie) {
-        const sessionState = state as SessionState;
+        // const sessionState = state as SessionState;
         // Get authState from db
         return null;
     }

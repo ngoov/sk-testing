@@ -47,7 +47,6 @@ export class AuthCookieConfig<TValue> {
             name: this.name,
             value: await encryptToken<TValue>({
                 secret: AUTH_CRYPTO_SECRET,
-                expirationDate: this._expirationDate,
                 token: value,
             }),
             options: this.getCookieOptions(),
