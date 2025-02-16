@@ -21,6 +21,6 @@ const autoLoginHook: Handle = async ({ event, resolve }) => {
     );
     return resolve(event);
 };
-
-const hooks = [i18nHook, autoLoginHook, appsumAuthHook];
+// i18nHook: this includes an invalid use of query params, should be fixed when using Paraglide
+const hooks = [autoLoginHook, appsumAuthHook];
 export const handle = sequence(...hooks);

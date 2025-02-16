@@ -1,9 +1,7 @@
 <script lang="ts">
-    import { page } from '$app/stores';
+    import { page } from '$app/state';
     import LL, { setLocale } from '$lib/i18n/i18n-svelte';
     import Header from '$lib/components/lang/Header.svelte';
-    import 'virtual:uno.css';
-    import '@unocss/reset/tailwind.css';
 
     export let data;
     // at the very top, set the locale before you access the store and before the actual rendering takes place
@@ -13,19 +11,19 @@
 </script>
 
 <svelte:head>
-    <title>{$page.data.title || 'typesafe-i18n'}</title>
+    <title>{page.data.title || 'typesafe-i18n'}</title>
 </svelte:head>
 
 <div class="app">
     <Header />
-    <div class="overflow-y-auto h-lg w-md overscroll-contain border border-gray">
+    <div class="h-lg border-gray w-96 overflow-y-auto overscroll-contain border">
         <pre>{JSON.stringify(data, null, 2)}</pre>
     </div>
-    {#if $page.data.session}
+    {#if page.data.session}
         <div>Logged in</div>
         <span class="signedInText">
             <small>Signed in as</small><br />
-            <strong>{$page.data.session.user?.email ?? $page.data.session.user?.name}</strong>
+            <strong>{page.data.session.user?.email ?? page.data.session.user?.name}</strong>
         </span>
         <a href="/api/auth/logout" class="button" data-sveltekit-preload-data="off">Sign out</a>
     {:else}

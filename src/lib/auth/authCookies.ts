@@ -1,6 +1,6 @@
 import { AuthCookieConfig } from '$lib/auth/authCookieConfig';
 import type { AuthConfig, AuthSessionState, AuthState, SessionState } from '$lib/auth/types';
-import dayjs from 'dayjs';
+import { addMinutes, addMonths } from 'date-fns';
 
 /**
  * Get the config for a cookie to save the intermediate state of an Authentication flow
@@ -8,7 +8,7 @@ import dayjs from 'dayjs';
 export const getAuthSessionStateCookieConfig = (authConfig: AuthConfig) =>
     new AuthCookieConfig<AuthSessionState>({
         cookieName: 'appsum.auth-session-state',
-        expirationDate: dayjs().add(15, 'minutes'),
+        expirationDate: addMinutes(new Date(), 15),
         authConfig,
     });
 
@@ -18,6 +18,6 @@ export const getAuthSessionStateCookieConfig = (authConfig: AuthConfig) =>
 export const getAuthStateCookieConfig = (authConfig: AuthConfig) =>
     new AuthCookieConfig<AuthState | SessionState>({
         cookieName: 'appsum.auth-state',
-        expirationDate: dayjs().add(1, 'months'),
+        expirationDate: addMonths(new Date(), 1),
         authConfig,
     });

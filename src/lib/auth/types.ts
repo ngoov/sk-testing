@@ -1,6 +1,9 @@
+import * as client from 'openid-client';
+
 export interface AuthSessionState {
     codeVerifier?: string;
     returnAfterLoginUrl?: string;
+    nonce?: string;
 }
 
 /**
@@ -34,8 +37,8 @@ export interface JWT extends Record<string, unknown>, DefaultJWT {}
 export interface AuthConfig {
     clientId: string;
     clientSecret: string;
-    issuerUrl: string;
-    redirectUrl: string;
+    issuerUrl: URL;
+    redirectUri: URL;
     useSecureCookies: boolean;
     scope: string;
     useJwtCookie: boolean;
@@ -52,3 +55,5 @@ export interface AuthState {
     token_type: string;
     claims: Profile;
 }
+
+export type TokenWithClaims = client.TokenEndpointResponse & client.TokenEndpointResponseHelpers;

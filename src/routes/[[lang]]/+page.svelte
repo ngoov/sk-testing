@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { Button } from '$lib/components/ui/button';
     import LL from '$lib/i18n/i18n-svelte';
 </script>
 
@@ -9,7 +8,7 @@
 </svelte:head>
 
 <section>
-    <h1 class="text-red font-bold">{$LL.welcome({ year: 2013 })}Test</h1>
-    <Button>123</Button>
+    <h1 class="font-bold text-red-500">{$LL.welcome({ year: 2013 })} Test</h1>
+    <button>123</button>
     <h2>Test</h2>
 </section>

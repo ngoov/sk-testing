@@ -1,19 +1,18 @@
 import { AUTH_CRYPTO_SECRET } from '$env/static/private';
 import { decryptToken, encryptToken } from '$lib/auth/cryptoUtils';
-import type dayjs from 'dayjs';
-import type { CookieSerializeOptions } from 'cookie';
 import type { AuthConfig } from '$lib/auth/types';
+import type { SerializeOptions } from 'cookie';
 
 export interface Cookie {
     name: string;
     value: string;
-    options: CookieSerializeOptions;
+    options: SerializeOptions;
 }
 
 export class AuthCookieConfig<TValue> {
     private _authConfig: AuthConfig;
     private _internalCookieName: string;
-    private _expirationDate: dayjs.Dayjs;
+    private _expirationDate: Date;
 
     public get name(): string {
         const prefix = this._authConfig.useSecureCookies ? '__Host-' : '';
@@ -26,20 +25,20 @@ export class AuthCookieConfig<TValue> {
     }: {
         authConfig: AuthConfig;
         cookieName: string;
-        expirationDate: dayjs.Dayjs;
+        expirationDate: Date;
     }) {
         this._authConfig = authConfig;
         this._internalCookieName = cookieName;
         this._expirationDate = expirationDate;
     }
 
-    private getCookieOptions(): CookieSerializeOptions {
+    private getCookieOptions(): SerializeOptions {
         return {
             httpOnly: true,
             sameSite: this._authConfig.useSecureCookies ? 'strict' : 'lax',
             path: '/',
             secure: this._authConfig.useSecureCookies,
-            expires: this._expirationDate.toDate(),
+            expires: this._expirationDate,
         };
     }
     public async createCookie(value: TValue): Promise<Cookie> {

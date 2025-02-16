@@ -1,9 +1,8 @@
 import { getAuthStateCookieConfig } from '$lib/auth/authCookies';
-import type { AuthConfig, AuthState, SessionState } from '$lib/auth/types';
-import type { TokenSet } from 'openid-client';
+import type { AuthConfig, AuthState, SessionState, TokenWithClaims } from '$lib/auth/types';
 
-export async function getAuthStateCookieToCreate(tokenSet: TokenSet, authConfig: AuthConfig) {
-    const authState = getAuthState(tokenSet);
+export async function getAuthStateCookieToCreate(token: TokenWithClaims, authConfig: AuthConfig) {
+    const authState = getAuthState(token);
     const cookieConfig = getAuthStateCookieConfig(authConfig);
     if (authConfig.useJwtCookie) {
         // save the whole authstate encrypted in the cookie
@@ -18,31 +17,17 @@ export async function getAuthStateCookieToCreate(tokenSet: TokenSet, authConfig:
     return cookieConfig.createCookie(sessionState);
 }
 
-function getAuthState(tokenSet: TokenSet) {
-    if (
-        !tokenSet.access_token ||
-        !tokenSet.id_token ||
-        !tokenSet.refresh_token ||
-        !tokenSet.expires_at ||
-        !tokenSet.token_type
-    )
+function getAuthState(token: TokenWithClaims) {
+    if (!token.access_token || !token.id_token || !token.refresh_token || !token.expires_at || !token.token_type)
         throw new Error('Given TokenSet is invalid.');
 
-    const claims = tokenSet.claims();
+    const claims = token.claims();
     return {
-        access_token: tokenSet.access_token,
-        id_token: tokenSet.id_token,
-        expires_at: tokenSet.expires_at,
-        token_type: tokenSet.token_type,
-        refresh_token: tokenSet.refresh_token,
-        claims: {
-            sub: claims.sub,
-            email: claims.email,
-            email_verified: claims.email_verified,
-            user_name: claims.user_name as string,
-            name: claims.name,
-            family_name: claims.family_name,
-            given_name: claims.given_name,
-        },
+        access_token: token.access_token,
+        id_token: token.id_token,
+        expires_at: token.expires_at as number,
+        token_type: token.token_type,
+        refresh_token: token.refresh_token,
+        claims: claims,
     } satisfies AuthState;
 }
