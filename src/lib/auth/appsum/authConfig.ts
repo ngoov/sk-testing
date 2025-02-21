@@ -1,10 +1,8 @@
-import { USE_SECURE_COOKIES } from '$env/static/private';
+import { AUTH_CLIENT_ID, AUTH_CLIENT_SECRET, USE_SECURE_COOKIES } from '$env/static/private';
 import type { AuthConfig } from '$lib/auth/types';
 import fs from 'fs/promises';
 import { importPKCS8 } from 'jose';
 // import { APPSUM_AUTH_CLIENT_ID, APPSUM_AUTH_CLIENT_SECRET } from '$env/static/private';
-const AUTH_CLIENT_ID = 'sk-testing';
-const AUTH_CLIENT_SECRET = 'QjDGK2R7CBIf4sf8sbYVDVNygBQ3uWfh';
 
 // eslint-disable-next-line @typescript-eslint/require-await
 /**
