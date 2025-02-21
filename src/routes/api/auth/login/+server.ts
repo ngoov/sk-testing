@@ -46,9 +46,5 @@ export async function GET({ url, cookies }) {
 
 async function setSessionStateCookie(cookies: Cookies, sessionState: AuthSessionState, authConfig: AuthConfig) {
     const sessionStateCookieConfig = getAuthSessionStateCookieConfig(authConfig);
-    const { name, options, value } = await sessionStateCookieConfig.createCookie(sessionState);
-
-    // TODO: remove any when issue is fixed: https://github.com/sveltejs/kit/pull/13386
-    // Set SerializeOptions as any, because we are using a more up to date version the cookie library
-    cookies.set(name, value, options as any);
+    await sessionStateCookieConfig.setCookie(cookies, sessionState);
 }

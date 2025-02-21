@@ -1,23 +1,12 @@
 import { AUTH_CRYPTO_SECRET } from '$env/static/private';
-import { decryptToken, encryptToken } from '$lib/auth/cryptoUtils';
 import type { AuthConfig } from '$lib/auth/types';
-import type { SerializeOptions } from 'cookie';
+import { EncryptedCookieConfig } from './cookies/encryptedCookieConfig';
 
-export interface Cookie {
-    name: string;
-    value: string;
-    options: SerializeOptions;
-}
-
-export class AuthCookieConfig<TValue> {
-    private _authConfig: AuthConfig;
-    private _internalCookieName: string;
-    private _expirationDate: Date;
-
-    public get name(): string {
-        const prefix = this._authConfig.useSecureCookies ? '__Host-' : '';
-        return `${prefix}${this._internalCookieName}`;
-    }
+/**
+ * Cookie configuration specifically for auth-related cookies.
+ * Handles secure cookie prefixes and auth-specific cookie options.
+ */
+export class AuthCookieConfig<TValue> extends EncryptedCookieConfig<TValue> {
     constructor({
         authConfig,
         cookieName,
@@ -27,32 +16,19 @@ export class AuthCookieConfig<TValue> {
         cookieName: string;
         expirationDate: Date;
     }) {
-        this._authConfig = authConfig;
-        this._internalCookieName = cookieName;
-        this._expirationDate = expirationDate;
-    }
-
-    private getCookieOptions(): SerializeOptions {
-        return {
-            httpOnly: true,
-            sameSite: this._authConfig.useSecureCookies ? 'strict' : 'lax',
-            path: '/',
-            secure: this._authConfig.useSecureCookies,
-            expires: this._expirationDate,
-        };
-    }
-    public async createCookie(value: TValue): Promise<Cookie> {
-        return {
-            name: this.name,
-            value: await encryptToken<TValue>({
-                secret: AUTH_CRYPTO_SECRET,
-                token: value,
-            }),
-            options: this.getCookieOptions(),
-        };
-    }
-
-    public async decryptValue(encryptedValue: string): Promise<TValue | null> {
-        return await decryptToken<TValue>({ token: encryptedValue, secret: AUTH_CRYPTO_SECRET });
+        const prefix = authConfig.useSecureCookies ? '__Host-' : '';
+        super({
+            cookieName: `${prefix}${cookieName}`,
+            encryptionSecret: AUTH_CRYPTO_SECRET,
+            options: {
+                httpOnly: true,
+                sameSite: authConfig.useSecureCookies ? 'strict' : 'lax',
+                path: '/',
+                secure: authConfig.useSecureCookies,
+                expires: expirationDate,
+            }
+        });
     }
 }
+
+export type { Cookie, ChunkedCookies } from './cookies/types';

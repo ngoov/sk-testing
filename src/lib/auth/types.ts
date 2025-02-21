@@ -1,3 +1,4 @@
+import type { KeyLike } from 'jose';
 import * as client from 'openid-client';
 
 export interface AuthSessionState {
@@ -36,7 +37,7 @@ export interface JWT extends Record<string, unknown>, DefaultJWT {}
 
 export interface AuthConfig {
     clientId: string;
-    clientSecret: string;
+    clientSecret: KeyLike | string;
     issuerUrl: URL;
     redirectUri: URL;
     useSecureCookies: boolean;
